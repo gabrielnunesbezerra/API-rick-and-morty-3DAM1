@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Rick and Morty</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Rick and Morty</h1>
+    <p id="contador"></p>
+    <input type="text" id="busca" placeholder="filtrar por nome...">
+    <div id="cards"></div>
+
+    <script>
+        let todos = [];
+        async function fetchData() {
+            const res = await fetch('/personagens');
+            todos = await res.json();
+            exibir(todos);
+        }
+        function exibir(lista) {
+            document.getElementById('contador').textContent = 
+            'exibindo ' + lista.length + 'de ' + todos.length + ' personagens';
+            document.getElementById('cards').innerHTML = lista.map(p => `
+                <div class="card">
+                    <img src="${p.image}" alt="${p.name}">
+                    <div class="info">
+                    <h3>${p.name}</h3>
+                    <span class="status ${p.status}">${p.status}</span>
+                    <p>${p.species}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        document.getElementById('busca').addEventListener('input', function() {
+            const termo = this.value.toLowerCase();
+            exibir(todos.filter(p => p.name.toLowerCase().includes(termo)));
+        });
+
+        carregar();
+
+    </script>
+</body>
+</html>
